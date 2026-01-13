@@ -1,8 +1,0 @@
-{
-	"BuildId": "47537391",
-	"Modules": 
-	{
-		"Paper2DPlus": "UnrealEditor-Paper2DPlus.dll",
-		"Paper2DPlusEditor": "UnrealEditor-Paper2DPlusEditor.dll"
-	}
-}
