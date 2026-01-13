@@ -1,0 +1,16 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "c:\\users\\bluey\\documents\\unreal projects\\lostfromlight\\plugins\\paper2dplus\\source\\paper2dplus\\private\\paper2dplusmodule.cpp",
+        "ProvidedModule": "",
+        "PCH": "c:\\users\\bluey\\documents\\unreal projects\\lostfromlight\\intermediate\\build\\win64\\x64\\lostradianceeditor\\development\\unrealed\\sharedpch.unrealed.project.valapi.valexpapi.cpp20.h.pch",
+        "Includes": [
+            "c:\\users\\bluey\\documents\\unreal projects\\lostfromlight\\plugins\\paper2dplus\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\paper2dplus\\definitions.paper2dplus.h",
+            "c:\\users\\bluey\\documents\\unreal projects\\lostfromlight\\plugins\\paper2dplus\\source\\paper2dplus\\public\\paper2dplusmodule.h",
+            "z:\\unreal\\ue_5.7\\engine\\source\\runtime\\coreuobject\\public\\uobject\\coreredirects.h",
+            "z:\\unreal\\ue_5.7\\engine\\source\\runtime\\coreuobject\\internal\\uobject\\coreredirects\\pm-k.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

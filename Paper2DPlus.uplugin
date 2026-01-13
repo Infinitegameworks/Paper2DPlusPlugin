@@ -1,0 +1,35 @@
+{
+	"FileVersion": 3,
+	"Version": 4,
+	"VersionName": "4.0",
+	"FriendlyName": "Paper2D Plus",
+	"Description": "Complete character sprite data pipeline for 2D games. Manage sprite sheets, flipbooks, hitboxes, sockets, and uniform dimensions across all character animations.",
+	"Category": "2D",
+	"CreatedBy": "Custom",
+	"CreatedByURL": "",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": true,
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "Paper2DPlus",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "Paper2DPlusEditor",
+			"Type": "Editor",
+			"LoadingPhase": "Default"
+		}
+	],
+	"Plugins": [
+		{
+			"Name": "Paper2D",
+			"Enabled": true
+		}
+	]
+}

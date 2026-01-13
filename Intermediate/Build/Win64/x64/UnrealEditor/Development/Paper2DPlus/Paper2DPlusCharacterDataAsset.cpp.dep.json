@@ -1,0 +1,25 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "c:\\users\\bluey\\documents\\unreal projects\\lostfromlight\\plugins\\paper2dplus\\source\\paper2dplus\\private\\paper2dpluscharacterdataasset.cpp",
+        "ProvidedModule": "",
+        "PCH": "c:\\users\\bluey\\documents\\unreal projects\\lostfromlight\\intermediate\\build\\win64\\x64\\lostradianceeditor\\development\\unrealed\\sharedpch.unrealed.project.valapi.valexpapi.cpp20.h.pch",
+        "Includes": [
+            "c:\\users\\bluey\\documents\\unreal projects\\lostfromlight\\plugins\\paper2dplus\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\paper2dplus\\definitions.paper2dplus.h",
+            "c:\\users\\bluey\\documents\\unreal projects\\lostfromlight\\plugins\\paper2dplus\\source\\paper2dplus\\public\\paper2dpluscharacterdataasset.h",
+            "c:\\users\\bluey\\documents\\unreal projects\\lostfromlight\\plugins\\paper2dplus\\source\\paper2dplus\\public\\paper2dplustypes.h",
+            "c:\\users\\bluey\\documents\\unreal projects\\lostfromlight\\plugins\\paper2dplus\\intermediate\\build\\win64\\unrealeditor\\inc\\paper2dplus\\uht\\paper2dplustypes.generated.h",
+            "z:\\unreal\\ue_5.7\\engine\\plugins\\2d\\paper2d\\source\\paper2d\\classes\\paperflipbook.h",
+            "z:\\unreal\\ue_5.7\\engine\\plugins\\2d\\paper2d\\intermediate\\build\\win64\\unrealeditor\\inc\\paper2d\\uht\\paperflipbook.generated.h",
+            "c:\\users\\bluey\\documents\\unreal projects\\lostfromlight\\plugins\\paper2dplus\\intermediate\\build\\win64\\unrealeditor\\inc\\paper2dplus\\uht\\paper2dpluscharacterdataasset.generated.h",
+            "z:\\unreal\\ue_5.7\\engine\\plugins\\2d\\paper2d\\source\\paper2d\\classes\\papersprite.h",
+            "z:\\unreal\\ue_5.7\\engine\\plugins\\2d\\paper2d\\source\\paper2d\\classes\\spriteeditoronlytypes.h",
+            "z:\\unreal\\ue_5.7\\engine\\plugins\\2d\\paper2d\\intermediate\\build\\win64\\unrealeditor\\inc\\paper2d\\uht\\spriteeditoronlytypes.generated.h",
+            "z:\\unreal\\ue_5.7\\engine\\source\\runtime\\engine\\public\\slate\\slatetextureatlasinterface.h",
+            "z:\\unreal\\ue_5.7\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\uht\\slatetextureatlasinterface.generated.h",
+            "z:\\unreal\\ue_5.7\\engine\\plugins\\2d\\paper2d\\intermediate\\build\\win64\\unrealeditor\\inc\\paper2d\\uht\\papersprite.generated.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

@@ -1,0 +1,16 @@
+/NOLOGO
+/errorReport:prompt
+/MACHINE:x64
+/SUBSYSTEM:WINDOWS
+/DEF
+/NAME:"UnrealEditor-Paper2DPlus.dll"
+/IGNORE:4221
+/NODEFAULTLIB
+"C:/Users/bluey/Documents/Unreal Projects/LostFromLight/Intermediate/Build/Win64/x64/LostRadianceEditor/Development/UnrealEd/SharedPCH.UnrealEd.Project.ValApi.ValExpApi.Cpp20.h.obj"
+"C:/Users/bluey/Documents/Unreal Projects/LostFromLight/Plugins/Paper2DPlus/Intermediate/Build/Win64/x64/UnrealEditor/Development/Paper2DPlus/Module.Paper2DPlus.cpp.obj"
+"C:/Users/bluey/Documents/Unreal Projects/LostFromLight/Plugins/Paper2DPlus/Intermediate/Build/Win64/x64/UnrealEditor/Development/Paper2DPlus/Paper2DPlusBlueprintLibrary.cpp.obj"
+"C:/Users/bluey/Documents/Unreal Projects/LostFromLight/Plugins/Paper2DPlus/Intermediate/Build/Win64/x64/UnrealEditor/Development/Paper2DPlus/Paper2DPlusCharacterDataAsset.cpp.obj"
+"C:/Users/bluey/Documents/Unreal Projects/LostFromLight/Plugins/Paper2DPlus/Intermediate/Build/Win64/x64/UnrealEditor/Development/Paper2DPlus/Paper2DPlusDebugComponent.cpp.obj"
+"C:/Users/bluey/Documents/Unreal Projects/LostFromLight/Plugins/Paper2DPlus/Intermediate/Build/Win64/x64/UnrealEditor/Development/Paper2DPlus/Paper2DPlusModule.cpp.obj"
+"C:/Users/bluey/Documents/Unreal Projects/LostFromLight/Plugins/Paper2DPlus/Intermediate/Build/Win64/x64/UnrealEditor/Development/Paper2DPlus/Default.rc2.res"
+/OUT:"C:/Users/bluey/Documents/Unreal Projects/LostFromLight/Plugins/Paper2DPlus/Intermediate/Build/Win64/x64/UnrealEditor/Development/Paper2DPlus/UnrealEditor-Paper2DPlus.lib"

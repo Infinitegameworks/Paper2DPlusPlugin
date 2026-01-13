@@ -1,0 +1,17 @@
+{
+	"RemapUnityFiles": 
+	{
+		"Module.Paper2DPlus.cpp.obj": [
+			"Paper2DPlus.init.gen.cpp.obj",
+			"Paper2DPlusBlueprintLibrary.gen.cpp.obj",
+			"Paper2DPlusCharacterDataAsset.gen.cpp.obj",
+			"Paper2DPlusDebugComponent.gen.cpp.obj",
+			"Paper2DPlusTypes.gen.cpp.obj",
+			"PerModuleInline.gen.cpp.obj",
+			"Paper2DPlusBlueprintLibrary.cpp.obj",
+			"Paper2DPlusCharacterDataAsset.cpp.obj",
+			"Paper2DPlusDebugComponent.cpp.obj",
+			"Paper2DPlusModule.cpp.obj"
+		]
+	}
+}

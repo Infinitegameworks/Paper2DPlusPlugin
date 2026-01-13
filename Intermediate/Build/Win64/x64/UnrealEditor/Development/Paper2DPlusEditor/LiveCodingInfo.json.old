@@ -1,0 +1,18 @@
+{
+	"RemapUnityFiles": 
+	{
+		"Module.Paper2DPlusEditor.cpp.obj": [
+			"CharacterDataAssetFactory.gen.cpp.obj",
+			"Paper2DPlusEditor.init.gen.cpp.obj",
+			"PerModuleInline.gen.cpp.obj",
+			"CharacterDataAssetActions.cpp.obj",
+			"CharacterDataAssetEditor.cpp.obj",
+			"CharacterDataAssetFactory.cpp.obj",
+			"CharacterDataJsonImporter.cpp.obj",
+			"DimensionManagementPanel.cpp.obj",
+			"Paper2DPlusEditorModule.cpp.obj",
+			"SpriteExtractorWindow.cpp.obj",
+			"SpriteReExtractor.cpp.obj"
+		]
+	}
+}
