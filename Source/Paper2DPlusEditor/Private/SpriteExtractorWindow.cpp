@@ -612,6 +612,43 @@ TSharedRef<SWidget> SSpriteExtractorWindow::BuildDetectionSection()
 			]
 		]
 
+		// Island detection specific settings
+		+ SVerticalBox::Slot()
+		.AutoHeight()
+		.Padding(0, 4)
+		[
+			SNew(SCheckBox)
+			.Visibility_Lambda([this]() { return DetectionMode == ESpriteDetectionMode::Island ? EVisibility::Visible : EVisibility::Collapsed; })
+			.IsChecked_Lambda([this]() { return bUse8DirectionalFloodFill ? ECheckBoxState::Checked : ECheckBoxState::Unchecked; })
+			.OnCheckStateChanged_Lambda([this](ECheckBoxState State) { bUse8DirectionalFloodFill = (State == ECheckBoxState::Checked); })
+			[
+				SNew(STextBlock).Text(LOCTEXT("8Dir", "8-directional detection (catches diagonals)"))
+			]
+		]
+
+		+ SVerticalBox::Slot()
+		.AutoHeight()
+		.Padding(0, 4)
+		[
+			SNew(SHorizontalBox)
+			.Visibility_Lambda([this]() { return DetectionMode == ESpriteDetectionMode::Island ? EVisibility::Visible : EVisibility::Collapsed; })
+
+			+ SHorizontalBox::Slot()
+			.FillWidth(0.5f)
+			[
+				SNew(STextBlock)
+				.Text(LOCTEXT("MergeDist", "Merge Distance (px):"))
+			]
+
+			+ SHorizontalBox::Slot()
+			.FillWidth(0.5f)
+			[
+				SNew(SNumericEntryBox<int32>)
+				.Value_Lambda([this]() { return IslandMergeDistance; })
+				.OnValueCommitted_Lambda([this](int32 Value, ETextCommit::Type) { IslandMergeDistance = FMath::Clamp(Value, 0, 50); })
+			]
+		]
+
 		// Grid-specific settings
 		+ SVerticalBox::Slot()
 		.AutoHeight()
@@ -694,6 +731,11 @@ TSharedRef<SWidget> SSpriteExtractorWindow::BuildUniformSizingSection()
 				{
 					if (bUseUniformSizing)
 					{
+						// Auto-detect if enabled
+						if (bAutoDetectUniformSize)
+						{
+							UniformSize = CalculateLargestSize();
+						}
 						ApplyUniformSizing();
 					}
 					else
@@ -718,7 +760,28 @@ TSharedRef<SWidget> SSpriteExtractorWindow::BuildUniformSizingSection()
 		.AutoHeight()
 		.Padding(0, 4)
 		[
+			SNew(SCheckBox)
+			.IsChecked_Lambda([this]() { return bAutoDetectUniformSize ? ECheckBoxState::Checked : ECheckBoxState::Unchecked; })
+			.OnCheckStateChanged_Lambda([this](ECheckBoxState State) {
+				bAutoDetectUniformSize = (State == ECheckBoxState::Checked);
+				if (bAutoDetectUniformSize && bUseUniformSizing && Canvas.IsValid() && Canvas->GetDetectedSprites().Num() > 0)
+				{
+					UniformSize = CalculateLargestSize();
+					ApplyUniformSizing();
+					RefreshSpriteList();
+				}
+			})
+			[
+				SNew(STextBlock).Text(LOCTEXT("AutoDetect", "Auto-detect largest sprite dimensions"))
+			]
+		]
+
+		+ SVerticalBox::Slot()
+		.AutoHeight()
+		.Padding(0, 4)
+		[
 			SNew(SHorizontalBox)
+			.Visibility_Lambda([this]() { return bAutoDetectUniformSize ? EVisibility::Collapsed : EVisibility::Visible; })
 
 			+ SHorizontalBox::Slot()
 			.FillWidth(0.25f)
@@ -766,12 +829,23 @@ TSharedRef<SWidget> SSpriteExtractorWindow::BuildUniformSizingSection()
 			]
 		]
 
+		// Show detected size when auto-detect is on
+		+ SVerticalBox::Slot()
+		.AutoHeight()
+		.Padding(0, 4)
+		[
+			SNew(STextBlock)
+			.Visibility_Lambda([this]() { return bAutoDetectUniformSize ? EVisibility::Visible : EVisibility::Collapsed; })
+			.Text_Lambda([this]() { return FText::Format(LOCTEXT("DetectedSize", "Detected Size: {0} x {1}"), FText::AsNumber(UniformSize.X), FText::AsNumber(UniformSize.Y)); })
+		]
+
 		+ SVerticalBox::Slot()
 		.AutoHeight()
 		.Padding(0, 4)
 		[
 			SNew(SButton)
-			.Text(LOCTEXT("CalcLargest", "Calculate Largest"))
+			.Text(LOCTEXT("CalcLargest", "Recalculate Largest"))
+			.Visibility_Lambda([this]() { return bAutoDetectUniformSize ? EVisibility::Collapsed : EVisibility::Visible; })
 			.OnClicked(this, &SSpriteExtractorWindow::OnCalculateLargestClicked)
 			.IsEnabled_Lambda([this]() { return Canvas.IsValid() && Canvas->GetDetectedSprites().Num() > 0; })
 		];
@@ -1078,6 +1152,12 @@ FReply SSpriteExtractorWindow::OnDetectSpritesClicked()
 	// First copy sprites to canvas
 	Canvas->SetDetectedSprites(DetectedSprites);
 
+	// Auto-detect largest size if enabled
+	if (bAutoDetectUniformSize && DetectedSprites.Num() > 0)
+	{
+		UniformSize = CalculateLargestSize();
+	}
+
 	// Then apply uniform sizing if enabled (this modifies canvas sprites)
 	if (bUseUniformSizing)
 	{
@@ -1137,6 +1217,9 @@ void SSpriteExtractorWindow::DetectIslands()
 			}
 		}
 	}
+
+	// Merge nearby islands
+	MergeNearbyIslands();
 
 	// Sort by position (top-left to bottom-right)
 	DetectedSprites.Sort([](const FDetectedSprite& A, const FDetectedSprite& B)
@@ -1285,6 +1368,16 @@ bool SSpriteExtractorWindow::ExtractSprites()
 		}
 
 		TargetCharacterAsset->Animations.Add(NewAnimation);
+	}
+
+	// Close the window after successful extraction
+	if (CreatedSprites.Num() > 0)
+	{
+		TSharedPtr<SWindow> ParentWindow = FSlateApplication::Get().FindWidgetWindow(AsShared());
+		if (ParentWindow.IsValid())
+		{
+			ParentWindow->RequestDestroyWindow();
+		}
 	}
 
 	return true;
@@ -1481,13 +1574,23 @@ bool SSpriteExtractorWindow::IsPixelOpaque(const TArray<FColor>& Pixels, int32 W
 {
 	int32 Index = Y * Width + X;
 	if (Index < 0 || Index >= Pixels.Num()) return false;
-	return Pixels[Index].A > AlphaThreshold;
+	return Pixels[Index].A >= AlphaThreshold;  // Use >= for better anti-aliased edge detection
 }
 
 void SSpriteExtractorWindow::FloodFillMark(TArray<bool>& Visited, const TArray<FColor>& Pixels, int32 Width, int32 Height, int32 StartX, int32 StartY, FIntRect& OutBounds) const
 {
 	TArray<FIntPoint> Stack;
 	Stack.Push(FIntPoint(StartX, StartY));
+
+	// Direction offsets: 4-directional (orthogonal) + 4 diagonal = 8-directional
+	static const int32 DX4[] = { -1, 1, 0, 0 };
+	static const int32 DY4[] = { 0, 0, -1, 1 };
+	static const int32 DX8[] = { -1, 1, 0, 0, -1, -1, 1, 1 };
+	static const int32 DY8[] = { 0, 0, -1, 1, -1, 1, -1, 1 };
+
+	const int32* DX = bUse8DirectionalFloodFill ? DX8 : DX4;
+	const int32* DY = bUse8DirectionalFloodFill ? DY8 : DY4;
+	const int32 NumDirections = bUse8DirectionalFloodFill ? 8 : 4;
 
 	while (Stack.Num() > 0)
 	{
@@ -1509,11 +1612,63 @@ void SSpriteExtractorWindow::FloodFillMark(TArray<bool>& Visited, const TArray<F
 		OutBounds.Max.X = FMath::Max(OutBounds.Max.X, X + 1);
 		OutBounds.Max.Y = FMath::Max(OutBounds.Max.Y, Y + 1);
 
-		// Add neighbors
-		Stack.Push(FIntPoint(X + 1, Y));
-		Stack.Push(FIntPoint(X - 1, Y));
-		Stack.Push(FIntPoint(X, Y + 1));
-		Stack.Push(FIntPoint(X, Y - 1));
+		// Add neighbors (4 or 8 directions based on setting)
+		for (int32 i = 0; i < NumDirections; i++)
+		{
+			Stack.Push(FIntPoint(X + DX[i], Y + DY[i]));
+		}
+	}
+}
+
+void SSpriteExtractorWindow::MergeNearbyIslands()
+{
+	if (IslandMergeDistance <= 0) return;
+
+	// Merge islands whose expanded bounds overlap
+	bool bMerged = true;
+	while (bMerged)
+	{
+		bMerged = false;
+		for (int32 i = 0; i < DetectedSprites.Num(); i++)
+		{
+			FIntRect ExpandedI = DetectedSprites[i].OriginalBounds;
+			ExpandedI.Min.X -= IslandMergeDistance;
+			ExpandedI.Min.Y -= IslandMergeDistance;
+			ExpandedI.Max.X += IslandMergeDistance;
+			ExpandedI.Max.Y += IslandMergeDistance;
+
+			for (int32 j = i + 1; j < DetectedSprites.Num(); j++)
+			{
+				const FIntRect& BoundsJ = DetectedSprites[j].OriginalBounds;
+
+				// Check if expanded bounds of i intersect with j
+				bool bIntersects = !(ExpandedI.Max.X <= BoundsJ.Min.X ||
+									 ExpandedI.Min.X >= BoundsJ.Max.X ||
+									 ExpandedI.Max.Y <= BoundsJ.Min.Y ||
+									 ExpandedI.Min.Y >= BoundsJ.Max.Y);
+
+				if (bIntersects)
+				{
+					// Merge j into i
+					DetectedSprites[i].OriginalBounds.Min.X = FMath::Min(DetectedSprites[i].OriginalBounds.Min.X, BoundsJ.Min.X);
+					DetectedSprites[i].OriginalBounds.Min.Y = FMath::Min(DetectedSprites[i].OriginalBounds.Min.Y, BoundsJ.Min.Y);
+					DetectedSprites[i].OriginalBounds.Max.X = FMath::Max(DetectedSprites[i].OriginalBounds.Max.X, BoundsJ.Max.X);
+					DetectedSprites[i].OriginalBounds.Max.Y = FMath::Max(DetectedSprites[i].OriginalBounds.Max.Y, BoundsJ.Max.Y);
+					DetectedSprites[i].Bounds = DetectedSprites[i].OriginalBounds;
+
+					DetectedSprites.RemoveAt(j);
+					bMerged = true;
+					break;
+				}
+			}
+			if (bMerged) break;
+		}
+	}
+
+	// Re-index after merging
+	for (int32 i = 0; i < DetectedSprites.Num(); i++)
+	{
+		DetectedSprites[i].Index = i;
 	}
 }
 

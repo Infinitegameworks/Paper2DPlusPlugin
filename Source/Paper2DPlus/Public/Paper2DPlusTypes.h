@@ -46,6 +46,14 @@ struct PAPER2DPLUS_API FHitboxData
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Hitbox")
 	int32 Height = 0;
 
+	/** Z position (depth offset) for 2.5D games */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Hitbox|Depth")
+	int32 Z = 0;
+
+	/** Depth (thickness in Z axis) for 2.5D games - 0 means use default */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Hitbox|Depth")
+	int32 Depth = 0;
+
 	/** Damage dealt (for attack type) */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Hitbox")
 	int32 Damage = 0;
@@ -54,16 +62,28 @@ struct PAPER2DPLUS_API FHitboxData
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Hitbox")
 	int32 Knockback = 0;
 
-	/** Get center point */
+	/** Get center point (2D) */
 	FVector2D GetCenter() const
 	{
 		return FVector2D(X + Width * 0.5f, Y + Height * 0.5f);
+	}
+
+	/** Get center point (3D) */
+	FVector GetCenter3D() const
+	{
+		return FVector(X + Width * 0.5f, Y + Height * 0.5f, Z + Depth * 0.5f);
 	}
 
 	/** Get rect as FBox2D */
 	FBox2D GetBox2D() const
 	{
 		return FBox2D(FVector2D(X, Y), FVector2D(X + Width, Y + Height));
+	}
+
+	/** Get box as FBox (3D) */
+	FBox GetBox3D() const
+	{
+		return FBox(FVector(X, Y, Z), FVector(X + Width, Y + Height, Z + Depth));
 	}
 };
 
@@ -255,6 +275,14 @@ struct PAPER2DPLUS_API FSpriteExtractionInfo
 	/** Timestamp of last extraction */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Extraction")
 	FDateTime ExtractionTime;
+
+	/** Display offset for sprite within uniform dimensions (pixels) - used for alignment editor */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sprite Alignment")
+	FIntPoint SpriteOffset = FIntPoint::ZeroValue;
+
+	/** Whether this frame has custom alignment applied */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sprite Alignment")
+	bool bHasCustomAlignment = false;
 
 	/** Check if dimensions match a given size */
 	bool MatchesDimensions(FIntPoint Size) const

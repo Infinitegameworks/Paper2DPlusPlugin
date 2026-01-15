@@ -14,7 +14,6 @@ public class Paper2DPlusEditor : ModuleRules
 			"Paper2DPlus",
 			"Slate",
 			"SlateCore",
-			"EditorStyle",
 			"Paper2D",
 			"Json",
 			"JsonUtilities",

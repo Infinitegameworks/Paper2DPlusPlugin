@@ -10,8 +10,18 @@
 
 #define LOCTEXT_NAMESPACE "FPaper2DPlusEditorModule"
 
+// Initialize static member
+EAssetTypeCategories::Type FPaper2DPlusEditorModule::Paper2DPlusAssetCategory = EAssetTypeCategories::Misc;
+
 void FPaper2DPlusEditorModule::StartupModule()
 {
+	// Register custom asset category
+	IAssetTools& AssetTools = FModuleManager::LoadModuleChecked<FAssetToolsModule>("AssetTools").Get();
+	Paper2DPlusAssetCategory = AssetTools.RegisterAdvancedAssetCategory(
+		FName(TEXT("Paper2DPlus")),
+		LOCTEXT("Paper2DPlusAssetCategory", "Paper2D+")
+	);
+
 	RegisterAssetTools();
 	RegisterMenuExtensions();
 	FSpriteExtractorActions::RegisterMenus();

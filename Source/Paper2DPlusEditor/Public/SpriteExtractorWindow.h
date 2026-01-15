@@ -117,8 +117,10 @@ private:
 
 	// Detection settings
 	ESpriteDetectionMode DetectionMode = ESpriteDetectionMode::Island;
-	int32 AlphaThreshold = 10;
+	int32 AlphaThreshold = 1;  // Lowered default for better edge detection
 	int32 MinSpriteSize = 4;
+	bool bUse8DirectionalFloodFill = true;  // Include diagonal neighbors
+	int32 IslandMergeDistance = 2;  // Merge islands within this distance
 
 	// Grid mode settings
 	int32 GridColumns = 4;
@@ -126,6 +128,7 @@ private:
 
 	// Uniform sizing
 	bool bUseUniformSizing = false;
+	bool bAutoDetectUniformSize = true;  // Auto-detect largest sprite dimensions
 	FIntPoint UniformSize = FIntPoint(64, 64);
 	ESpriteAnchor UniformAnchor = ESpriteAnchor::BottomCenter;
 
@@ -182,6 +185,7 @@ private:
 	bool LoadTextureData(TArray<FColor>& OutPixels, int32& OutWidth, int32& OutHeight) const;
 	bool IsPixelOpaque(const TArray<FColor>& Pixels, int32 Width, int32 X, int32 Y) const;
 	void FloodFillMark(TArray<bool>& Visited, const TArray<FColor>& Pixels, int32 Width, int32 Height, int32 StartX, int32 StartY, FIntRect& OutBounds) const;
+	void MergeNearbyIslands();
 	FIntRect CalculateAnchoredBounds(const FIntRect& OriginalBounds, FIntPoint TargetSize, ESpriteAnchor Anchor) const;
 };
 

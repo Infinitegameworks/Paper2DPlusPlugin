@@ -1,5 +1,6 @@
 #include "CharacterDataAssetFactory.h"
 #include "Paper2DPlusCharacterDataAsset.h"
+#include "Paper2DPlusEditorModule.h"
 #include "AssetTypeCategories.h"
 
 #define LOCTEXT_NAMESPACE "CharacterDataAssetFactory"
@@ -39,7 +40,7 @@ FText UCharacterDataAssetFactory::GetDisplayName() const
 
 uint32 UCharacterDataAssetFactory::GetMenuCategories() const
 {
-	return EAssetTypeCategories::Misc;
+	return FPaper2DPlusEditorModule::GetAssetCategory();
 }
 
 #undef LOCTEXT_NAMESPACE

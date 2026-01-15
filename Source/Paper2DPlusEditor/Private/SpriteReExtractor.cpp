@@ -7,6 +7,8 @@
 #include "ObjectTools.h"
 #include "ScopedTransaction.h"
 #include "Misc/ScopedSlowTask.h"
+#include "Framework/Notifications/NotificationManager.h"
+#include "Widgets/Notifications/SNotificationList.h"
 
 #define LOCTEXT_NAMESPACE "SpriteReExtractor"
 
@@ -286,6 +288,13 @@ bool FSpriteReExtractor::LoadTextureData(
 {
 	if (!Texture) return false;
 
+	// Null check for platform data
+	if (!Texture->GetPlatformData() || Texture->GetPlatformData()->Mips.Num() == 0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("SpriteReExtractor: Texture has no platform data or mips"));
+		return false;
+	}
+
 	OutWidth = Texture->GetSizeX();
 	OutHeight = Texture->GetSizeY();
 
@@ -415,6 +424,12 @@ void FSpriteReExtractor::UpdateFlipbookSprites(
 	if (!Flipbook) return;
 
 	UE_LOG(LogTemp, Warning, TEXT("Flipbook update not supported in UE 5.7 - please recreate flipbook manually from extracted sprites"));
+
+	// Show notification to user
+	FNotificationInfo Info(LOCTEXT("FlipbookRecreateNote", "Sprites re-extracted. Please recreate the flipbook manually from the new sprites."));
+	Info.ExpireDuration = 5.0f;
+	Info.bUseSuccessFailIcons = false;
+	FSlateNotificationManager::Get().AddNotification(Info);
 }
 
 void FSpriteReExtractor::DeleteOldSprites(UPaperFlipbook* Flipbook)
